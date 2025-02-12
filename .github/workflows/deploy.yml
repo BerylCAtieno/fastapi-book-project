@@ -13,17 +13,10 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
 
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: "3.10"
-
-      - name: Install Dependencies
+      - name: Deploy FastAPI Service
         run: |
-          pip install -r requirements.txt
+          curl -X POST "https://api.render.com/deploy/srv-{fastapi_service_id}?key=${{ secrets.RENDER_API_KEY }}"
 
-      - name: Deploy Application
+      - name: Deploy Nginx Service
         run: |
-          # Replace this with actual deployment command, such as:
-          # ssh into the server and restart the app
-          echo "Deploying application..."
+          curl -X POST "https://api.render.com/deploy/srv-{nginx_service_id}?key=${{ secrets.RENDER_API_KEY }}"
