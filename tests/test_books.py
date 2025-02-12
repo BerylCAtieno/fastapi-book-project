@@ -50,3 +50,27 @@ def test_delete_book():
 
     response = client.get("/books/3")
     assert response.status_code == 404
+
+## tests for get_book endpoint
+
+def test_get_book_by_id():
+    book_id = 1  
+    response = client.get(f"/api/v1/books/{book_id}")
+    
+    assert response.status_code == 200
+    data = response.json()
+    
+    assert "id" in data
+    assert "title" in data
+    assert "author" in data
+    assert "publication_year" in data
+    assert "genre" in data
+    assert data["id"] == book_id
+
+
+def test_get_nonexistent_book():
+    book_id = 9999  # Assuming this book does not exist
+    response = client.get(f"/api/v1/books/{book_id}")
+    
+    assert response.status_code == 404
+    assert response.json() == {"detail": "Book not found"}
