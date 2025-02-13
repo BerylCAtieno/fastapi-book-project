@@ -1,9 +1,6 @@
 name: CI Pipeline
 
-on:
-  pull_request:
-    branches:
-      - main
+on: [push, pull_request]
 
 jobs:
   test:
@@ -20,7 +17,11 @@ jobs:
 
       - name: Install Dependencies
         run: |
+          python -m venv venv
+          source venv/bin/activate
           pip install -r requirements.txt
 
       - name: Run Tests
-        run: pytest
+        run: |
+           source venv/bin/activate
+           pytest

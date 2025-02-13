@@ -10,13 +10,16 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v3
-
-      - name: Deploy FastAPI Service
-        run: |
-          curl -X POST "https://api.render.com/deploy/srv-{fastapi_service_id}?key=${{ secrets.RENDER_API_KEY }}"
-
-      - name: Deploy Nginx Service
-        run: |
-          curl -X POST "https://api.render.com/deploy/srv-{nginx_service_id}?key=${{ secrets.RENDER_API_KEY }}"
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@master
+        with:
+           host: ${{ secrets.SERVER_IP }}
+           username: ubuntu
+           key: ${{ secrets.SSH_PRIVATE_KEY }}
+           script: |
+              cd /home/ubuntu/fastapi-app
+              git pull origin main
+              source venv/bin/activate
+              pip instll -r requirements.txt
+              sudo systemctl restart fastapi
+              sudo systemctl restart nginx
